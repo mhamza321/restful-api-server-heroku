@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front End for sending request to our server</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <h1>Front End for sending request to our deployed server at heroku</h1>
+
+    <form action="" onsubmit="signUp(); return false;">
+        <label for="name">Name</label>
+        <input type="text" id="username"> <br>
+
+        <label for="email">Email</label>
+        <input type="email" id="email"> <br>
+
+        <label for="password">Password</label>
+        <input type="password" id="password"> <br>
+
+        <input type="submit" value="Sign Up">
+    </form>
+    <br>
+    <p id="message"></p>
+
+    <br> <br>
+    <button onclick="getAllUsers(); return false;"> Get All Users</button>
+    <p id="allUsersLists"></p>
+
+    <script>
+        function signUp() {
+            let name = document.querySelector("#username").value;
+            let email = document.querySelector("#email").value;
+            let password = document.querySelector("#password").value;
+
+            // now we will send a post request to our server.
+
+            axios.post('https://social-media-server-testing.herokuapp.com/user', {
+                "name": name,
+                "email": email,
+                "password": password
+            })
+                .then(function (response) {
+
+                    console.log(response.data);
+                    document.querySelector("#message").innerHTML = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error.message);
+                });
+        }
+
+        function getAllUsers() {
+            axios.get('https://social-media-server-testing.herokuapp.com/user')
+                .then(function (response) {
+                    // handle success
+                    console.log(response.data);
+
+                    response.data.map(eachUser => {
+                        document.querySelector("#allUsersLists").innerHTML += `Name: ${eachUser.name} Email: ${eachUser.email} Password: ${eachUser.password} <br/>`;
+                    })
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+                .then(function () {
+                    // always executed
+                });
+        }
+
+    </script>
+</body>
+
+</html>
